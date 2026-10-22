@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#120c29">
+  <meta name="description"
+        content="Smart Ride Advisor helps Android drivers in Pakistan understand pickup distance, fuel costs and effective fare rates.">
+  <title>Smart Ride Advisor — Drive with clarity</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #100b24;
+      --surface: #1c1438;
+      --surface-light: #281d49;
+      --text: #f6f2ff;
+      --muted: #bcb3d0;
+      --gold: #e4c783;
+      --purple: #9167ee;
+      --border: rgba(228, 199, 131, .18);
+      --green: #94e3b0;
+      --yellow: #f4d582;
+      --red: #ffaaa9;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 100px;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
+                   "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    a { color: var(--gold); }
+    button, input { font: inherit; }
+    a, button, input, summary { -webkit-tap-highlight-color: transparent; }
+
+    :focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 5px;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .skip {
+      position: absolute;
+      left: 16px;
+      top: -80px;
+      padding: 12px 18px;
+      background: var(--gold);
+      color: var(--background);
+      z-index: 20;
+    }
+
+    .skip:focus { top: 12px; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(16, 11, 36, .96);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .navigation {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 84px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border: 1px solid var(--gold);
+      border-radius: 14px;
+      background: linear-gradient(145deg, #493176, #211639);
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .brand strong, .brand small { display: block; }
+    .brand strong { font-size: 15px; }
+    .brand small { color: var(--muted); font-size: 11px; }
+
+    nav { display: flex; flex-wrap: wrap; gap: 22px; }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    nav a:hover { color: var(--gold); }
+    section { padding: 82px 0; }
+
+    .hero {
+      padding: 100px 0 80px;
+      background:
+        radial-gradient(ellipse at 80% 20%, #38205d 0, transparent 55%),
+        var(--background);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      align-items: center;
+      gap: 70px;
+    }
+
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3 { line-height: 1.15; }
+
+    h1 {
+      margin: 0 0 25px;
+      font-size: clamp(42px, 6vw, 72px);
+      letter-spacing: -.055em;
+    }
+
+    h1 span { color: var(--gold); }
+
+    h2 {
+      margin: 0 0 20px;
+      font-size: clamp(30px, 4vw, 44px);
+      letter-spacing: -.04em;
+    }
+
+    h3 { margin: 0 0 14px; font-size: 21px; }
+    p { margin-top: 0; }
+
+    .lead {
+      max-width: 600px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .muted { color: var(--muted); }
+    .small { font-size: 12px; }
+    .gold { color: var(--gold); }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin: 30px 0 20px;
+    }
+
+    .button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 48px;
+      padding: 12px 22px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      background: linear-gradient(110deg, #8457da, #6358cb);
+      color: white;
+      font-weight: 650;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .button.secondary {
+      border-color: var(--border);
+      background: transparent;
+      color: var(--text);
+    }
+
+    .location {
+      margin-top: 34px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .location .eyebrow { margin-bottom: 6px; }
+
+    .app-preview {
+      max-width: 390px;
+      margin-left: auto;
+      padding: 24px;
+      border: 1px solid rgba(228, 199, 131, .4);
+      border-radius: 32px;
+      background: linear-gradient(160deg, #30204d, #17102d);
+      box-shadow: 0 30px 100px rgba(0, 0, 0, .3);
+      transform: rotate(2deg);
+    }
+
+    .preview-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 24px 0;
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      color: var(--gold);
+    }
+
+    .preview-card, .card {
+      padding: 26px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--surface);
+    }
+
+    .preview-card { padding: 22px; background: #2a1d43; }
+
+    .distance-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 18px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .rate {
+      margin: 14px 0 0;
+      font-size: 48px;
+      font-weight: 750;
+      letter-spacing: -.05em;
+    }
+
+    .rate span {
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border: 1px solid currentColor;
+      border-radius: 50px;
+      color: var(--green);
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: .1em;
+    }
+
+    .preview-settings {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 16px 0 22px;
+    }
+
+    .preview-settings div {
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 12px;
+    }
+
+    .preview-tabs {
+      display: flex;
+      justify-content: space-around;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .section-intro { max-width: 650px; margin-bottom: 34px; }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .grid-three {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .soft-section {
+      border-block: 1px solid var(--border);
+      background: #15102b;
+    }
+
+    dl { margin: 0; }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 20px;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .info-row:last-child { border-bottom: 0; }
+    dt { color: var(--muted); font-size: 13px; }
+    dd { margin: 0; overflow-wrap: anywhere; }
+
+    .notice {
+      padding: 18px 20px;
+      border-left: 3px solid var(--gold);
+      border-radius: 0 12px 12px 0;
+      background: rgba(228, 199, 131, .06);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .chips span {
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .step {
+      margin-bottom: 22px;
+      color: var(--gold);
+      font-size: 13px;
+      letter-spacing: .1em;
+    }
+
+    .card p { margin-bottom: 0; color: var(--muted); }
+
+    .calculator-layout {
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      align-items: start;
+      gap: 50px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    input {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #130d27;
+      color: var(--text);
+    }
+
+    .calculator details { margin: 22px 0; }
+    summary { color: var(--gold); cursor: pointer; font-size: 14px; }
+    .calculator details .form-grid { margin-top: 20px; }
+    .calculator .button { width: 100%; }
+
+    .result {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .result[data-status="yellow"] .badge { color: var(--yellow); }
+    .result[data-status="red"] .badge { color: var(--red); }
+
+    .result-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+
+    .result-list div {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .result-list dt { font-size: inherit; }
+    .result-list dd { text-align: right; }
+    .error { margin: 12px 0; color: var(--red); font-size: 13px; }
+    [hidden] { display: none !important; }
+
+    .faq details {
+      padding: 17px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq summary { color: var(--text); }
+    .faq details p { margin: 16px 0 0; color: var(--muted); font-size: 14px; }
+
+    .contact-card {
+      padding: 32px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: linear-gradient(145deg, #2d2049, #1b1433);
+    }
+
+    .email { overflow-wrap: anywhere; }
+    .policy { max-width: 850px; }
+    .policy h3 { margin-top: 30px; font-size: 18px; }
+    .policy p, .policy li { color: var(--muted); font-size: 14px; }
+    .policy .notice { margin: 26px 0; }
+    .deletion ul { padding-left: 22px; color: var(--muted); }
+    .deletion li { margin-bottom: 10px; }
+    footer { padding: 45px 0; border-top: 1px solid var(--border); }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: start;
+      gap: 18px;
+      max-width: 420px;
+    }
+
+    .footer-links a { font-size: 13px; text-decoration: none; }
+
+    @media (max-width: 800px) {
+      .navigation { flex-wrap: wrap; padding: 15px 0; gap: 14px; }
+      nav { gap: 16px; }
+      .hero { padding-top: 60px; }
+      .hero-grid, .calculator-layout, .grid-two {
+        grid-template-columns: 1fr;
+        gap: 34px;
+      }
+      .grid-three { grid-template-columns: 1fr; }
+      .app-preview { width: 100%; margin: 15px auto 0; transform: none; }
+      section { padding: 58px 0; }
+      .footer-top { flex-direction: column; }
+    }
+
+    @media (max-width: 440px) {
+      .container { width: calc(100% - 28px); }
+      .form-grid { grid-template-columns: 1fr; }
+      .info-row { grid-template-columns: 1fr; gap: 4px; }
+      .card, .contact-card { padding: 21px; }
+      .brand strong { font-size: 14px; }
+      nav a { font-size: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header>
+    <div class="container navigation">
+      <a class="brand" href="#home" aria-label="Smart Ride Advisor home">
+        <span class="brand-icon" aria-hidden="true">SRA</span>
+        <span>
+          <strong>Smart Ride Advisor</strong>
+          <small>Drive with clarity</small>
+        </span>
+      </a>
+
+      <nav aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <a href="#app-info">App info</a>
+        <a href="#permissions">Permissions</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#support">Support</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <p class="eyebrow">Built for drivers in Pakistan</p>
+          <h1>Your next ride.<br><span>A clearer decision.</span></h1>
+          <p class="lead">
+            The pickup counts, too. Understand the full distance,
+            fuel costs and fare before you decide on a ride.
+          </p>
+
+          <div class="actions">
+            <a class="button" href="#calculator">Check a fare</a>
+            <a class="button secondary" href="#how-it-works">How SRA works</a>
+          </div>
+
+          <p class="small muted">
+            Advice only. Every offer stays in your hands.
+          </p>
+
+          <div class="location">
+            <p class="eyebrow">Starting close to home</p>
+            <p class="small">Wah Cantt · Taxila · Hasan Abdal</p>
+          </div>
+        </div>
+
+        <aside class="app-preview" aria-label="Illustrative app interface">
+          <p class="eyebrow">A familiar view. A smarter check.</p>
+
+          <div class="brand">
+            <span class="brand-icon" aria-hidden="true">SRA</span>
+            <span>
+              <strong>Smart Ride Advisor</strong>
+              <small>Drive with clarity</small>
+            </span>
+          </div>
+
+          <div class="preview-heading">
+            <div>
+              <strong>Hello, driver</strong><br>
+              <span class="small muted">Your next ride, a clearer decision.</span>
+            </div>
+            <span class="avatar" aria-hidden="true">D</span>
+          </div>
+
+          <div class="preview-card">
+            <p class="eyebrow">Example ride</p>
+            <h3>The full distance.<br>The right perspective.</h3>
+
+            <div class="distance-row">
+              <span>Pickup <strong>4 km</strong></span>
+              <span>+</span>
+              <span>Passenger trip <strong>8 km</strong></span>
+            </div>
+
+            <p class="small muted">Total driving <strong>12 km</strong></p>
+            <span class="badge">Green</span>
+
+            <p class="rate">Rs 70 <span>/km</span></p>
+            <p class="small muted">Rs 840 ÷ 12 km · pickup included</p>
+          </div>
+
+          <div class="preview-settings">
+            <div>Fuel average<br><strong>Your vehicle</strong></div>
+            <div>Rate settings<br><strong>Your choice</strong></div>
+          </div>
+
+          <div class="preview-tabs" aria-hidden="true">
+            <span class="gold">Home</span>
+            <span>Settings</span>
+            <span>Calc</span>
+            <span>Help</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="app-info">
+      <div class="container">
+        <div class="section-intro">
+          <p class="eyebrow">About the app</p>
+          <h2>Smart Ride Advisor,<br>at a glance.</h2>
+          <p class="muted">
+            Independent fare guidance for Android drivers. A clearer view
+            of each ride, with every decision left to you.
+          </p>
+        </div>
+
+        <div class="grid-two">
+          <div class="card">
+            <dl>
+              <div class="info-row"><dt>App name</dt><dd>Smart Ride Advisor (SRA)</dd></div>
+              <div class="info-row"><dt>Developer / owner</dt><dd>Muhammad Waqas</dd></div>
+              <div class="info-row"><dt>Platform</dt><dd>Android</dd></div>
+              <div class="info-row"><dt>Intended users</dt><dd>Ride-hailing drivers in Pakistan</dd></div>
+              <div class="info-row"><dt>Android package</dt><dd>com.smartrideadvisor.app</dd></div>
+              <div class="info-row"><dt>Google Play download</dt><dd>Link available after release</dd></div>
+            </dl>
+          </div>
+
+          <div>
+            <h3>Count every kilometre you drive.</h3>
+            <p class="muted">
+              Review pickup and passenger distance together, consider
+              fuel costs, and compare a fare with your own settings.
+            </p>
+            <div class="notice">
+              SRA is independent of inDrive. It does not provide passenger
+              bookings, accept rides or make offers on your behalf.
+            </div>
+            <div class="chips" aria-label="App principles">
+              <span>Pickup included</span>
+              <span>Fuel costs considered</span>
+              <span>Clear fare guidance</span>
+              <span>Manual offers, always</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="soft-section" id="how-it-works">
+      <div class="container">
+        <div class="section-intro">
+          <p class="eyebrow">A little clarity goes a long way</p>
+          <h2>See the ride beyond the fare.</h2>
+          <p class="muted">
+            An attractive passenger fare is only the beginning.
+            SRA helps you consider the driving that gets you there.
+          </p>
+        </div>
+
+        <div class="grid-three">
+          <article class="card">
+            <div class="step">01</div>
+            <h3>Make it your setup</h3>
+            <p>Enter your vehicle’s fuel average, petrol price and preferred minimum and target rates.</p>
+          </article>
+          <article class="card">
+            <div class="step">02</div>
+            <h3>Read the whole ride</h3>
+            <p>Check pickup and passenger distance using the app’s authorized screen reader, a screenshot or manual entry.</p>
+          </article>
+          <article class="card">
+            <div class="step">03</div>
+            <h3>Decide with clarity</h3>
+            <p>Use the fare guidance, review the costs and enter any offer yourself in inDrive.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="calculator">
+      <div class="container calculator-layout">
+        <div>
+          <p class="eyebrow">Try the idea</p>
+          <h2>Same fare.<br>Fuller picture.</h2>
+          <p class="lead">
+            Explore how pickup changes the effective rate.
+            Nothing you enter here is sent to SRA.
+          </p>
+          <div class="notice">
+            Passenger fare ÷ (pickup + passenger trip) = effective gross Rs/km.
+          </div>
+          <p class="small muted" style="margin-top:20px">
+            A gross fare rate is not net profit. This browser example
+            does not read inDrive or know its allowed offers.
+          </p>
+        </div>
+
+        <div class="card calculator">
+          <h3>Check an example fare</h3>
+          <p class="small muted">Adjust the numbers to see the difference.</p>
+
+          <form id="fare-form">
+            <div class="form-grid">
+              <div>
+                <label for="fare">Passenger fare · PKR</label>
+                <input id="fare" name="fare" type="number" min="0.01" max="1000000" step="0.01" value="840" required>
+              </div>
+              <div>
+                <label for="pickup">Pickup distance · km</label>
+                <input id="pickup" name="pickup" type="number" min="0" max="10000" step="0.01" value="4" required>
+              </div>
+              <div>
+                <label for="trip">Passenger trip · km</label>
+                <input id="trip" name="trip" type="number" min="0.01" max="10000" step="0.01" value="8" required>
+              </div>
+              <div>
+                <label for="average">Fuel average · km/L</label>
+                <input id="average" name="average" type="number" min="0.1" max="1000" step="0.1" value="15" required>
+              </div>
+            </div>
+
+            <details>
+              <summary>Adjust fuel, commission &amp; rate settings</summary>
+              <div class="form-grid">
+                <div>
+                  <label for="petrol">Petrol price · PKR/L</label>
+                  <input id="petrol" name="petrol" type="number" min="0.01" max="100000" step="0.01" value="391.30" required>
+                </div>
+                <div>
+                  <label for="commission">Commission · %</label>
+                  <input id="commission" name="commission" type="number" min="0" max="99.99" step="0.01" value="15" required>
+                </div>
+                <div>
+                  <label for="target">Target gross rate · PKR/km</label>
+                  <input id="target" name="target" type="number" min="0.01" max="100000" step="0.01" value="70" required>
+                </div>
+                <div>
+                  <label for="minimum">Minimum gross rate · PKR/km</label>
+                  <input id="minimum" name="minimum" type="number" min="0.01" max="100000" step="0.01" value="55" required>
+                </div>
+              </div>
+            </details>
+
+            <p id="calc-error" class="error" role="alert" hidden></p>
+            <button class="button" type="submit">Calculate the full picture</button>
+          </form>
+
+          <div class="result" id="result" data-status="green" aria-live="polite" aria-atomic="true">
+            <span class="badge" id="result-band">Green · gross rate</span>
+            <p class="small muted" id="total-distance">12 km total driving</p>
+            <p class="rate">Rs <span id="effective-rate" style="font:inherit;color:inherit">70</span> <span>/km</span></p>
+            <p class="small muted" id="result-explanation">The fare reaches Rs 70/km with pickup included.</p>
+            <dl class="result-list">
+              <div><dt>Estimated fuel</dt><dd id="fuel-cost">Rs 313.04</dd></div>
+              <div><dt>Estimated commission</dt><dd id="commission-cost">Rs 126</dd></div>
+              <div><dt>Contribution before maintenance &amp; other costs</dt><dd id="contribution">Rs 400.96</dd></div>
+            </dl>
+          </div>
+
+          <p class="small muted" style="margin-top:22px">
+            Illustrative rate bands only. The app also considers vehicle-cost
+            safeguards and offer limits. Default prices and rates are examples,
+            not current petrol prices or recommended settings.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="soft-section" id="permissions">
+      <div class="container">
+        <div class="section-intro">
+          <p class="eyebrow">Permissions &amp; your control</p>
+          <h2>Understand the access.<br>Stay in control.</h2>
+          <p class="muted">
+            Android permissions support the features you choose to use.
+            You can stop the reader and manage permissions in Android Settings.
+          </p>
+        </div>
+
+        <div class="grid-three">
+          <article class="card">
+            <h3>Accessibility &amp; screen reading</h3>
+            <p>
+              With your permission, SRA reads relevant ride-screen text
+              to identify fares and distances. Screen capture and OCR
+              can help where text is unavailable.
+            </p>
+            <p style="margin-top:15px">
+              The Android app must explain this access and obtain your
+              affirmative consent before you enable it. This website
+              does not replace that in-app consent.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Overlay &amp; live-service notices</h3>
+            <p>
+              Display-over-other-apps access shows compact advice while
+              you review a ride. Android screen-sharing and foreground-service
+              controls show when the live service is active.
+            </p>
+            <p style="margin-top:15px">
+              Use Stop in SRA, stop screen sharing through Android,
+              or revoke the relevant permission in Settings.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Optional location</h3>
+            <p>
+              The optional activity-location feature requires a separate
+              choice in SRA and Android location permission. Location
+              samples can be recorded during an active session when enabled.
+            </p>
+            <p style="margin-top:15px">
+              You can keep this feature disabled. Location is not permission
+              to make offers or accept rides for you.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="support">
+      <div class="container">
+        <div class="section-intro">
+          <p class="eyebrow">Help &amp; support</p>
+          <h2>A clearer start.<br>A little help when needed.</h2>
+          <p class="muted">Setup, calculation and account information in one place.</p>
+        </div>
+
+        <div class="grid-two">
+          <div class="faq">
+            <details open>
+              <summary>How do I get started?</summary>
+              <p>
+                Enter your vehicle’s fuel average, petrol price and preferred
+                minimum and target rates in SRA. Read the screen-reader explanation
+                before granting permissions. Use Start when you want live advice.
+              </p>
+            </details>
+            <details>
+              <summary>Why does pickup distance matter?</summary>
+              <p>
+                You drive the pickup distance before the passenger trip begins.
+                Including both distances gives a fuller picture of the fare
+                per kilometre you drive.
+              </p>
+            </details>
+            <details>
+              <summary>Is the effective rate my net profit?</summary>
+              <p>
+                No. Effective gross rate is fare divided by total driving distance.
+                Fuel, commission, maintenance and other running costs affect
+                your net earnings.
+              </p>
+            </details>
+            <details>
+              <summary>What if a distance is missing or incorrect?</summary>
+              <p>
+                Check the values against the ride screen. Correct them manually
+                or try a clearer screenshot before relying on the calculation.
+              </p>
+            </details>
+            <details>
+              <summary>Does SRA accept a ride or enter an offer?</summary>
+              <p>
+                No. SRA provides guidance. You decide whether to accept a ride
+                and enter every offer yourself in inDrive.
+              </p>
+            </details>
+            <details>
+              <summary>Where is the Google Play download link?</summary>
+              <p>The Google Play download link will be added after release.</p>
+            </details>
+          </div>
+
+          <aside class="contact-card">
+            <p class="eyebrow">Contact the developer</p>
+            <h3>Muhammad Waqas</h3>
+            <p class="muted">Smart Ride Advisor</p>
+            <p class="email">
+              <a href="mailto:smartrideadvisor.support@gmail.com">smartrideadvisor.support@gmail.com</a>
+            </p>
+            <a class="button" href="mailto:smartrideadvisor.support@gmail.com?subject=SRA%20support">Email support</a>
+            <p class="small muted" style="margin-top:22px">
+              For app help, privacy questions or account requests, contact us
+              at this address. Please do not send passwords, verification codes
+              or passenger information.
+            </p>
+            <p class="small">
+              <a href="#privacy">Privacy Policy</a>
+              &nbsp;·&nbsp;
+              <a href="#delete-account">Account deletion</a>
+            </p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="soft-section" id="privacy">
+      <div class="container policy">
+        <p class="eyebrow">Your data</p>
+        <h2>Privacy Policy</h2>
+        <p class="small muted">Smart Ride Advisor · Last updated 15 October 2026</p>
+
+        <div class="notice">
+          <strong class="gold">Pre-release policy draft</strong><br>
+          Final retention periods and deletion handling must be confirmed
+          before this policy is used for Google Play submission.
+        </div>
+
+        <h3>1. Who operates SRA?</h3>
+        <p>
+          Smart Ride Advisor is owned by Muhammad Waqas. It is an independent
+          Android decision assistant for ride-hailing drivers in Pakistan
+          and is not affiliated with inDrive.
+        </p>
+
+        <h3>2. Information handled by the Android app</h3>
+        <p>
+          SRA can handle account identifiers, sign-in details through
+          authentication services, name, phone or email, city, working areas,
+          vehicle details, fuel average, petrol price and preferred
+          calculation settings.
+        </p>
+        <p>
+          Calculation records can include pickup and passenger trip distances,
+          fares, effective rates, advice, the settings used and timestamps.
+        </p>
+        <p>
+          Device and service records can include device model, Android and
+          app versions, login history, service sessions and manually selected
+          activity phases.
+        </p>
+        <p>
+          If you separately enable the optional location feature and grant
+          Android permission, location samples and derived activity or area
+          information can be recorded during active sessions.
+        </p>
+
+        <h3>3. Why this information is used</h3>
+        <p>
+          These records support account access, saved preferences, ride
+          calculations, calculation history, service activity and support.
+          Authorized SRA administrators can access relevant records to operate
+          and support the service. Any additional use in the released app must
+          be disclosed before release.
+        </p>
+
+        <h3>4. Accessibility, screen capture and screenshots</h3>
+        <p>
+          With your permission, SRA reads relevant text exposed on ride
+          screens through Android accessibility. Screen capture and OCR
+          can identify ride values where supported, and screenshot checks
+          process images you select.
+        </p>
+        <p>
+          Extracted fare and distance values may be saved in calculation
+          history. SRA does not use this access to accept rides or enter
+          offers for you. You can stop live reading or revoke its Android
+          permissions. Accessibility use needs a separate in-app explanation
+          and affirmative consent.
+        </p>
+
+        <h3>5. Service providers and data access</h3>
+        <p>
+          The Android project uses Google Firebase Authentication and
+          Realtime Database and includes Firebase Analytics. Google services
+          can process account, device and usage information according to
+          the features and SDK configuration enabled in the app. Read
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google’s Privacy Policy</a>
+          for information about Google services.
+        </p>
+        <p>
+          The final policy and Google Play Data safety declaration must
+          reflect the Android version that is actually released.
+          No claim that SRA collects no data is made.
+        </p>
+
+        <h3>6. Retention and deletion</h3>
+        <p>
+          Account, profile, settings, calculation and service activity records
+          may remain stored until removed. Final retention periods, backup
+          handling and any lawful retention exceptions have not yet been published.
+        </p>
+        <p>
+          The current app implementation marks raw location samples for expiry
+          after 30 days and attempts cleanup during service operation. This does
+          not guarantee deletion at an exact time; cleanup and retained summaries
+          need release verification.
+        </p>
+        <p>
+          Account deletion must address the sign-in account and its associated
+          data, subject to any clearly disclosed retention obligations.
+          You can request deletion by email using the
+          <a href="#delete-account">account deletion section</a>.
+          Ownership verification, completion time and any retention exceptions
+          will be explained when your request is reviewed.
+        </p>
+
+        <h3>7. Security and your choices</h3>
+        <p>
+          Use Android Settings to control permissions and SRA’s controls to stop
+          live reading. Do not share passwords or verification codes. Production
+          access controls, secure data handling and the final retention/deletion
+          process must be verified before release.
+        </p>
+
+        <h3>8. This website</h3>
+        <p>
+          The example calculator runs locally in your browser and does not
+          submit its entries to SRA. This website has no registration, payment
+          or message-submission forms. Support and deletion links open your
+          email app; you choose whether to send the message.
+        </p>
+        <p>
+          If you email support, your email address and message are used to
+          respond and, where needed, verify account ownership. The hosting
+          provider may process technical request information needed to serve
+          the site.
+        </p>
+
+        <h3>9. Privacy contact and updates</h3>
+        <p>
+          The operator is Muhammad Waqas, Smart Ride Advisor. For privacy
+          questions or data requests, email
+          <a href="mailto:smartrideadvisor.support@gmail.com">smartrideadvisor.support@gmail.com</a>.
+          The date above will be updated when this policy changes.
+        </p>
+      </div>
+    </section>
+
+    <section class="deletion" id="delete-account">
+      <div class="container">
+        <div class="section-intro">
+          <p class="eyebrow">Account &amp; data deletion</p>
+          <h2>Your account.<br>Your choice.</h2>
+          <p class="muted">
+            Account deletion information for Smart Ride Advisor,
+            available without signing in to this website.
+          </p>
+        </div>
+
+        <div class="grid-two">
+          <article class="card">
+            <h3>Request account deletion</h3>
+            <p>
+              Send your account-deletion request to
+              <a class="email" href="mailto:smartrideadvisor.support@gmail.com">smartrideadvisor.support@gmail.com</a>
+              with the subject <strong>SRA account deletion request</strong>.
+            </p>
+            <p style="margin-top:16px">
+              Include the phone number or email used for your SRA account
+              so it can be identified. Account ownership may need to be
+              verified before removal. Completion times and any retention
+              exceptions will be explained when your request is reviewed.
+            </p>
+            <div class="actions">
+              <a class="button" href="mailto:smartrideadvisor.support@gmail.com?subject=SRA%20account%20deletion%20request">Email deletion request</a>
+            </div>
+            <p class="small muted">
+              Review and send from your email app. Opening the email link
+              does not send a request or automatically delete your account.
+              If your device does not open an email app, copy the address
+              above and send the request using your email service.
+            </p>
+            <p class="small muted" style="margin-top:14px">
+              The Android app also needs an accessible deletion-request route
+              before release.
+            </p>
+          </article>
+
+          <article class="card">
+            <p class="eyebrow">Associated data</p>
+            <h3>What the process must cover</h3>
+            <ul>
+              <li>Sign-in account and driver profile</li>
+              <li>Vehicle details and saved calculation settings</li>
+              <li>Calculation history and sign-in records</li>
+              <li>Service activity and stored location records</li>
+            </ul>
+            <p class="small">
+              Any retained information, retention period, legal exception
+              or backup limitation must be explained before requests are accepted.
+            </p>
+            <div class="notice" style="margin-top:22px">
+              Never provide passwords or OTPs. This concerns your SRA account,
+              not your inDrive account.
+            </div>
+            <p style="margin-top:20px"><a href="#privacy">Read the Privacy Policy</a></p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <a class="brand" href="#home">
+            <span class="brand-icon" aria-hidden="true">SRA</span>
+            <span>
+              <strong>Smart Ride Advisor</strong>
+              <small>Clearer choices. Every kilometre.</small>
+            </span>
+          </a>
+          <p class="small muted" style="margin-top:18px">
+            Android ride guidance for drivers in Pakistan.<br>
+            Operated by Muhammad Waqas.
+          </p>
+        </div>
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="#app-info">App information</a>
+          <a href="#support">Help &amp; support</a>
+          <a href="#privacy">Privacy Policy</a>
+          <a href="#delete-account">Delete account</a>
+        </nav>
+      </div>
+      <p class="small muted">
+        © 2026 Smart Ride Advisor · Muhammad Waqas<br>
+        Independent app. Not affiliated with inDrive.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const form = document.getElementById("fare-form");
+      const error = document.getElementById("calc-error");
+      const result = document.getElementById("result");
+
+      const format = new Intl.NumberFormat("en-PK", {
+        maximumFractionDigits: 2
+      });
+
+      const number = name => Number(form.elements.namedItem(name).value);
+      const money = value => "Rs " + format.format(value);
+
+      const setText = (id, text) => {
+        document.getElementById(id).textContent = text;
+      };
+
+      function calculate(event) {
+        if (event) event.preventDefault();
+
+        error.hidden = true;
+
+        const fare = number("fare");
+        const pickup = number("pickup");
+        const trip = number("trip");
+        const average = number("average");
+        const petrol = number("petrol");
+        const commission = number("commission");
+        const target = number("target");
+        const minimum = number("minimum");
+
+        const values = [
+          fare, pickup, trip, average, petrol,
+          commission, target, minimum
+        ];
+
+        const valid = values.every(Number.isFinite)
+          && fare > 0
+          && pickup >= 0
+          && trip > 0
+          && average > 0
+          && petrol > 0
+          && commission >= 0
+          && commission < 100
+          && minimum > 0
+          && target >= minimum;
+
+        if (!valid) {
+          result.hidden = true;
+          error.textContent =
+            "Check the values. The target rate must be at least the minimum rate.";
+          error.hidden = false;
+          return;
+        }
+
+        const total = pickup + trip;
+        const rate = fare / total;
+        const fuelCost = total / average * petrol;
+        const commissionCost = fare * commission / 100;
+        const contribution = fare - fuelCost - commissionCost;
+
+        let status;
+        let explanation;
+
+        if (rate >= target) {
+          status = "green";
+          explanation =
+            "The fare reaches " + money(target)
+            + "/km with pickup included.";
+        } else if (rate >= minimum) {
+          status = "yellow";
+          explanation =
+            "The fare reaches your minimum gross rate, but is below "
+            + "your target of " + money(target) + "/km.";
+        } else {
+          status = "red";
+          explanation =
+            "The fare is below your minimum gross rate of "
+            + money(minimum) + "/km with pickup included.";
+        }
+
+        result.hidden = false;
+        result.dataset.status = status;
+
+        setText("result-band", status.toUpperCase() + " · GROSS RATE");
+        setText("total-distance", format.format(total) + " km total driving");
+        setText("effective-rate", format.format(rate));
+        setText("result-explanation", explanation);
+        setText("fuel-cost", money(fuelCost));
+        setText("commission-cost", money(commissionCost));
+        setText("contribution", money(contribution));
+      }
+
+      form.addEventListener("submit", calculate);
+      calculate();
+    })();
+  </script>
+</body>
+</html>
