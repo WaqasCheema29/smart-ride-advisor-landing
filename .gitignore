@@ -4,3 +4,4 @@ Desktop.ini
 .vscode/
 .idea/
 *.log
+.vercel

@@ -8,6 +8,11 @@
         content="Smart Ride Advisor helps Android drivers in Pakistan understand pickup distance, fuel costs and effective fare rates.">
   <title>Smart Ride Advisor — Drive with clarity</title>
 
+  <!-- Firebase App & Database SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
   <style>
     :root {
       color-scheme: dark;
@@ -22,6 +27,7 @@
       --green: #94e3b0;
       --yellow: #f4d582;
       --red: #ffaaa9;
+      --red-accent: #e54d58;
     }
 
     * { box-sizing: border-box; }
@@ -196,6 +202,12 @@
       border-color: var(--border);
       background: transparent;
       color: var(--text);
+    }
+
+    .button.danger {
+      background: linear-gradient(110deg, #e54d58, #bd2130);
+      border-color: rgba(229, 77, 88, 0.4);
+      color: #fff;
     }
 
     .location {
@@ -467,6 +479,81 @@
 
     .footer-links a { font-size: 13px; text-decoration: none; }
 
+    /* Modal Styles */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 6, 24, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-dialog {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+      animation: modalFadeIn 0.25s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-dialog h3 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #fff;
+    }
+
+    .modal-dialog .danger-banner {
+      padding: 14px;
+      background: rgba(229, 77, 88, 0.12);
+      border-left: 4px solid var(--red-accent);
+      border-radius: 8px;
+      margin: 16px 0 20px;
+      font-size: 13px;
+      color: var(--red);
+    }
+
+    .modal-info-box {
+      background: #120b29;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .modal-info-box div {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 6px 0;
+    }
+
+    .modal-info-box span { color: var(--muted); }
+    .modal-info-box strong { color: var(--text); font-weight: 600; }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .status-msg {
+      margin-top: 14px;
+      font-size: 13px;
+      text-align: center;
+    }
+
     @media (max-width: 800px) {
       .navigation { flex-wrap: wrap; padding: 15px 0; gap: 14px; }
       nav { gap: 16px; }
@@ -488,6 +575,8 @@
       .card, .contact-card { padding: 21px; }
       .brand strong { font-size: 14px; }
       nav a { font-size: 12px; }
+      .modal-actions { flex-direction: column-reverse; }
+      .modal-actions .button { width: 100%; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -498,6 +587,44 @@
 
 <body>
   <a class="skip" href="#main">Skip to content</a>
+
+  <!-- Account Deletion Modal -->
+  <div id="deletion-modal" class="modal-backdrop" hidden>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <p class="eyebrow" style="color:var(--red)">Permanent Action</p>
+      <h3 id="modal-title">Confirm Account Deletion</h3>
+
+      <div class="danger-banner">
+        Warning: Deleting your account will revoke access immediately and remove your settings, vehicle configuration, and ride logs.
+      </div>
+
+      <div class="modal-info-box">
+        <div>
+          <span>Driver Name:</span>
+          <strong id="modal-user-name">Loading...</strong>
+        </div>
+        <div>
+          <span>Phone / Email:</span>
+          <strong id="modal-user-phone">Loading...</strong>
+        </div>
+        <div>
+          <span>User ID:</span>
+          <strong id="modal-user-uid" style="font-size:11px;font-family:monospace;">Loading...</strong>
+        </div>
+        <div>
+          <span>Request ID:</span>
+          <strong id="modal-request-id" style="font-size:11px;font-family:monospace;">Loading...</strong>
+        </div>
+      </div>
+
+      <div class="modal-actions" id="modal-buttons">
+        <button type="button" class="button secondary" id="btn-cancel-modal">Cancel &amp; Keep Account</button>
+        <button type="button" class="button danger" id="btn-confirm-delete">Delete My Account</button>
+      </div>
+
+      <div id="modal-status-text" class="status-msg" hidden></div>
+    </div>
+  </div>
 
   <header>
     <div class="container navigation">
@@ -1121,6 +1248,7 @@
     (() => {
       "use strict";
 
+      // --- Calculator Logic ---
       const form = document.getElementById("fare-form");
       const error = document.getElementById("calc-error");
       const result = document.getElementById("result");
@@ -1133,12 +1261,12 @@
       const money = value => "Rs " + format.format(value);
 
       const setText = (id, text) => {
-        document.getElementById(id).textContent = text;
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
       };
 
       function calculate(event) {
         if (event) event.preventDefault();
-
         error.hidden = true;
 
         const fare = number("fare");
@@ -1150,26 +1278,14 @@
         const target = number("target");
         const minimum = number("minimum");
 
-        const values = [
-          fare, pickup, trip, average, petrol,
-          commission, target, minimum
-        ];
-
+        const values = [fare, pickup, trip, average, petrol, commission, target, minimum];
         const valid = values.every(Number.isFinite)
-          && fare > 0
-          && pickup >= 0
-          && trip > 0
-          && average > 0
-          && petrol > 0
-          && commission >= 0
-          && commission < 100
-          && minimum > 0
-          && target >= minimum;
+          && fare > 0 && pickup >= 0 && trip > 0 && average > 0 && petrol > 0
+          && commission >= 0 && commission < 100 && minimum > 0 && target >= minimum;
 
         if (!valid) {
           result.hidden = true;
-          error.textContent =
-            "Check the values. The target rate must be at least the minimum rate.";
+          error.textContent = "Check the values. The target rate must be at least the minimum rate.";
           error.hidden = false;
           return;
         }
@@ -1185,19 +1301,13 @@
 
         if (rate >= target) {
           status = "green";
-          explanation =
-            "The fare reaches " + money(target)
-            + "/km with pickup included.";
+          explanation = "The fare reaches " + money(target) + "/km with pickup included.";
         } else if (rate >= minimum) {
           status = "yellow";
-          explanation =
-            "The fare reaches your minimum gross rate, but is below "
-            + "your target of " + money(target) + "/km.";
+          explanation = "The fare reaches your minimum gross rate, but is below your target of " + money(target) + "/km.";
         } else {
           status = "red";
-          explanation =
-            "The fare is below your minimum gross rate of "
-            + money(minimum) + "/km with pickup included.";
+          explanation = "The fare is below your minimum gross rate of " + money(minimum) + "/km with pickup included.";
         }
 
         result.hidden = false;
@@ -1214,6 +1324,91 @@
 
       form.addEventListener("submit", calculate);
       calculate();
+
+      // --- Firebase & Account Deletion Workflow ---
+      const firebaseConfig = {
+        databaseURL: "https://smart-ride-advisor-default-rtdb.asia-southeast1.firebasedatabase.app"
+      };
+
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      const db = firebase.database();
+
+      // Parse Query Parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const uid = urlParams.get("uid");
+      const phone = urlParams.get("phone") || "Not provided";
+      const name = urlParams.get("name") || "Valued Driver";
+      const requestId = urlParams.get("requestId");
+
+      const modal = document.getElementById("deletion-modal");
+      const modalUserName = document.getElementById("modal-user-name");
+      const modalUserPhone = document.getElementById("modal-user-phone");
+      const modalUserUid = document.getElementById("modal-user-uid");
+      const modalRequestId = document.getElementById("modal-request-id");
+      const btnCancel = document.getElementById("btn-cancel-modal");
+      const btnConfirm = document.getElementById("btn-confirm-delete");
+      const modalStatus = document.getElementById("modal-status-text");
+      const modalButtons = document.getElementById("modal-buttons");
+
+      if (uid) {
+        modalUserName.textContent = name;
+        modalUserPhone.textContent = phone;
+        modalUserUid.textContent = uid;
+        modalRequestId.textContent = requestId || "N/A";
+        modal.hidden = false;
+      }
+
+      btnCancel.addEventListener("click", () => {
+        modal.hidden = true;
+      });
+
+      btnConfirm.addEventListener("click", async () => {
+        btnConfirm.disabled = true;
+        btnCancel.disabled = true;
+        btnConfirm.textContent = "Processing deletion...";
+        modalStatus.hidden = false;
+        modalStatus.style.color = "var(--muted)";
+        modalStatus.textContent = "Archiving user data and processing request...";
+
+        const deletionTimestamp = Date.now();
+        const deletedRecord = {
+          uid: uid,
+          fullName: name,
+          phone: phone,
+          requestId: requestId || "",
+          deletedAt: deletionTimestamp,
+          deletedBy: "USER_WEB_CONFIRMATION",
+          status: "DELETED"
+        };
+
+        const updates = {};
+        // 1. Store deleted record for admin tracking
+        updates[`/deleted_users/${uid}`] = deletedRecord;
+        // 2. Mark deletion request completed
+        if (requestId) {
+          updates[`/account_deletion_requests/${uid}/${requestId}/status`] = "COMPLETED";
+          updates[`/account_deletion_requests/${uid}/${requestId}/completedAt`] = deletionTimestamp;
+        }
+        // 3. Remove driver record from active database
+        updates[`/drivers/${uid}`] = null;
+
+        try {
+          await db.ref().update(updates);
+
+          modalStatus.style.color = "var(--green)";
+          modalStatus.innerHTML = "<strong>Your account has been deleted successfully.</strong><br>You may now close this window.";
+          modalButtons.innerHTML = `<button type="button" class="button" onclick="document.getElementById('deletion-modal').hidden=true">Done</button>`;
+        } catch (err) {
+          console.error("Deletion error:", err);
+          modalStatus.style.color = "var(--red)";
+          modalStatus.textContent = "Error completing deletion: " + (err.message || "Network error. Please try again.");
+          btnConfirm.disabled = false;
+          btnCancel.disabled = false;
+          btnConfirm.textContent = "Delete My Account";
+        }
+      });
     })();
   </script>
 </body>
