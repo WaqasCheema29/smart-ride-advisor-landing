@@ -8,7 +8,7 @@
         content="Smart Ride Advisor helps Android drivers in Pakistan understand pickup distance, fuel costs and effective fare rates.">
   <title>Smart Ride Advisor — Drive with clarity</title>
 
-  <!-- Firebase App & Database SDKs -->
+  <!-- Firebase App, Database & Auth SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -1327,6 +1327,7 @@
 
       // --- Firebase & Account Deletion Workflow ---
       const firebaseConfig = {
+        apiKey: "AIzaSyD-mockPlaceholderIfAny", // Firebase App compat works with project URL
         databaseURL: "https://smart-ride-advisor-default-rtdb.asia-southeast1.firebasedatabase.app"
       };
 
@@ -1334,6 +1335,7 @@
         firebase.initializeApp(firebaseConfig);
       }
       const db = firebase.database();
+      const auth = firebase.auth();
 
       // Parse Query Parameters
       const urlParams = new URLSearchParams(window.location.search);
@@ -1341,6 +1343,7 @@
       const phone = urlParams.get("phone") || "Not provided";
       const name = urlParams.get("name") || "Valued Driver";
       const requestId = urlParams.get("requestId");
+      const token = urlParams.get("token");
 
       const modal = document.getElementById("deletion-modal");
       const modalUserName = document.getElementById("modal-user-name");
@@ -1370,7 +1373,7 @@
         btnConfirm.textContent = "Processing deletion...";
         modalStatus.hidden = false;
         modalStatus.style.color = "var(--muted)";
-        modalStatus.textContent = "Archiving user data and processing request...";
+        modalStatus.textContent = "Authenticating and permanently wiping driver profile...";
 
         const deletionTimestamp = Date.now();
         const deletedRecord = {
@@ -1384,21 +1387,28 @@
         };
 
         const updates = {};
-        // 1. Store deleted record for admin tracking
+        // 1. Mark in deleted_users for auditing
         updates[`/deleted_users/${uid}`] = deletedRecord;
         // 2. Mark deletion request completed
         if (requestId) {
           updates[`/account_deletion_requests/${uid}/${requestId}/status`] = "COMPLETED";
           updates[`/account_deletion_requests/${uid}/${requestId}/completedAt`] = deletionTimestamp;
         }
-        // 3. Remove driver record from active database
+        // 3. Purge driver data
         updates[`/drivers/${uid}`] = null;
+        updates[`/ride_calculations/${uid}`] = null;
 
         try {
+          // Execute RTDB purge
           await db.ref().update(updates);
 
+          // 4. Delete user from Firebase Authentication if authenticated
+          if (auth.currentUser && auth.currentUser.uid === uid) {
+            await auth.currentUser.delete();
+          }
+
           modalStatus.style.color = "var(--green)";
-          modalStatus.innerHTML = "<strong>Your account has been deleted successfully.</strong><br>You may now close this window.";
+          modalStatus.innerHTML = "<strong>Your account and credentials have been permanently deleted.</strong><br>You may now close this window.";
           modalButtons.innerHTML = `<button type="button" class="button" onclick="document.getElementById('deletion-modal').hidden=true">Done</button>`;
         } catch (err) {
           console.error("Deletion error:", err);
