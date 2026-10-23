@@ -41,8 +41,7 @@
       margin: 0;
       background: var(--background);
       color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
-                   "Segoe UI", sans-serif;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.65;
     }
 
@@ -113,7 +112,7 @@
     .brand strong { font-size: 15px; }
     .brand small { color: var(--muted); font-size: 11px; }
 
-    nav { display: flex; flex-wrap: wrap; gap: 22px; }
+    nav { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; }
 
     nav a {
       color: var(--muted);
@@ -122,6 +121,19 @@
     }
 
     nav a:hover { color: var(--gold); }
+
+    .nav-btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      color: var(--gold) !important;
+      font-weight: 600;
+    }
+    .nav-btn:hover {
+      border-color: var(--gold);
+      background: rgba(228, 199, 131, 0.08);
+    }
+
     section { padding: 82px 0; }
 
     .hero {
@@ -202,6 +214,10 @@
       border-color: var(--border);
       background: transparent;
       color: var(--text);
+    }
+
+    .button.secondary:hover {
+      border-color: var(--gold);
     }
 
     .button.danger {
@@ -556,7 +572,7 @@
 
     @media (max-width: 800px) {
       .navigation { flex-wrap: wrap; padding: 15px 0; gap: 14px; }
-      nav { gap: 16px; }
+      nav { gap: 14px; }
       .hero { padding-top: 60px; }
       .hero-grid, .calculator-layout, .grid-two {
         grid-template-columns: 1fr;
@@ -642,6 +658,7 @@
         <a href="#permissions">Permissions</a>
         <a href="#privacy">Privacy</a>
         <a href="#support">Support</a>
+        <a href="delete-guide.html" class="nav-btn">Terms &amp; Delete Account</a>
       </nav>
     </div>
   </header>
@@ -659,7 +676,7 @@
 
           <div class="actions">
             <a class="button" href="#calculator">Check a fare</a>
-            <a class="button secondary" href="#how-it-works">How SRA works</a>
+            <a class="button secondary" href="delete-guide.html">Terms &amp; Account Deletion Steps</a>
           </div>
 
           <p class="small muted">
@@ -1010,7 +1027,7 @@
             <p class="small">
               <a href="#privacy">Privacy Policy</a>
               &nbsp;·&nbsp;
-              <a href="#delete-account">Account deletion</a>
+              <a href="delete-guide.html">Terms &amp; Account Deletion Guide</a>
             </p>
           </aside>
         </div>
@@ -1112,10 +1129,8 @@
         <p>
           Account deletion must address the sign-in account and its associated
           data, subject to any clearly disclosed retention obligations.
-          You can request deletion by email using the
-          <a href="#delete-account">account deletion section</a>.
-          Ownership verification, completion time and any retention exceptions
-          will be explained when your request is reviewed.
+          You can delete your account directly inside the Android application by following the
+          <a href="delete-guide.html">Terms &amp; Account Deletion Guide</a>.
         </p>
 
         <h3>7. Security and your choices</h3>
@@ -1132,12 +1147,6 @@
           submit its entries to SRA. This website has no registration, payment
           or message-submission forms. Support and deletion links open your
           email app; you choose whether to send the message.
-        </p>
-        <p>
-          If you email support, your email address and message are used to
-          respond and, where needed, verify account ownership. The hosting
-          provider may process technical request information needed to serve
-          the site.
         </p>
 
         <h3>9. Privacy contact and updates</h3>
@@ -1156,58 +1165,38 @@
           <p class="eyebrow">Account &amp; data deletion</p>
           <h2>Your account.<br>Your choice.</h2>
           <p class="muted">
-            Account deletion information for Smart Ride Advisor,
-            available without signing in to this website.
+            You can permanently delete your Smart Ride Advisor driver account and all associated data in under a minute directly inside the app.
           </p>
         </div>
 
         <div class="grid-two">
           <article class="card">
-            <h3>Request account deletion</h3>
+            <h3>Delete Account via Mobile App</h3>
             <p>
-              Send your account-deletion request to
-              <a class="email" href="mailto:smartrideadvisor.support@gmail.com">smartrideadvisor.support@gmail.com</a>
-              with the subject <strong>SRA account deletion request</strong>.
+              The fastest way to delete your data is directly from your Android phone:
             </p>
-            <p style="margin-top:16px">
-              Include the phone number or email used for your SRA account
-              so it can be identified. Account ownership may need to be
-              verified before removal. Completion times and any retention
-              exceptions will be explained when your request is reviewed.
-            </p>
+            <ol style="padding-left: 20px; color: var(--muted); font-size: 14px; margin-top: 14px;">
+              <li>Log in to the Smart Ride Advisor app.</li>
+              <li>Go to the <strong>Driver Profile</strong> screen.</li>
+              <li>Scroll down to the bottom and tap the red <strong>Delete Account</strong> button.</li>
+              <li>Confirm the action in the prompt.</li>
+            </ol>
             <div class="actions">
-              <a class="button" href="mailto:smartrideadvisor.support@gmail.com?subject=SRA%20account%20deletion%20request">Email deletion request</a>
+              <a class="button" href="delete-guide.html">View Full Terms &amp; Instructions</a>
             </div>
-            <p class="small muted">
-              Review and send from your email app. Opening the email link
-              does not send a request or automatically delete your account.
-              If your device does not open an email app, copy the address
-              above and send the request using your email service.
-            </p>
-            <p class="small muted" style="margin-top:14px">
-              The Android app also needs an accessible deletion-request route
-              before release.
-            </p>
           </article>
 
           <article class="card">
-            <p class="eyebrow">Associated data</p>
-            <h3>What the process must cover</h3>
-            <ul>
-              <li>Sign-in account and driver profile</li>
-              <li>Vehicle details and saved calculation settings</li>
-              <li>Calculation history and sign-in records</li>
-              <li>Service activity and stored location records</li>
-            </ul>
-            <p class="small">
-              Any retained information, retention period, legal exception
-              or backup limitation must be explained before requests are accepted.
+            <p class="eyebrow">Alternative</p>
+            <h3>Email Deletion Request</h3>
+            <p>
+              If you have uninstalled the app or lost access to your device, you can email our support desk directly:
+              <a class="email" href="mailto:smartrideadvisor.support@gmail.com">smartrideadvisor.support@gmail.com</a>
+              with the subject <strong>SRA account deletion request</strong>.
             </p>
             <div class="notice" style="margin-top:22px">
-              Never provide passwords or OTPs. This concerns your SRA account,
-              not your inDrive account.
+              Never provide passwords or OTPs. Deletion concerns only your SRA account, not your inDrive account.
             </div>
-            <p style="margin-top:20px"><a href="#privacy">Read the Privacy Policy</a></p>
           </article>
         </div>
       </div>
@@ -1234,7 +1223,7 @@
           <a href="#app-info">App information</a>
           <a href="#support">Help &amp; support</a>
           <a href="#privacy">Privacy Policy</a>
-          <a href="#delete-account">Delete account</a>
+          <a href="delete-guide.html">Terms &amp; Delete Account</a>
         </nav>
       </div>
       <p class="small muted">
@@ -1327,7 +1316,7 @@
 
       // --- Firebase & Account Deletion Workflow ---
       const firebaseConfig = {
-        apiKey: "AIzaSyD-mockPlaceholderIfAny", // Firebase App compat works with project URL
+        apiKey: "AIzaSyD-mockPlaceholderIfAny",
         databaseURL: "https://smart-ride-advisor-default-rtdb.asia-southeast1.firebasedatabase.app"
       };
 
@@ -1337,13 +1326,11 @@
       const db = firebase.database();
       const auth = firebase.auth();
 
-      // Parse Query Parameters
       const urlParams = new URLSearchParams(window.location.search);
       const uid = urlParams.get("uid");
       const phone = urlParams.get("phone") || "Not provided";
       const name = urlParams.get("name") || "Valued Driver";
       const requestId = urlParams.get("requestId");
-      const token = urlParams.get("token");
 
       const modal = document.getElementById("deletion-modal");
       const modalUserName = document.getElementById("modal-user-name");
@@ -1387,22 +1374,17 @@
         };
 
         const updates = {};
-        // 1. Mark in deleted_users for auditing
         updates[`/deleted_users/${uid}`] = deletedRecord;
-        // 2. Mark deletion request completed
         if (requestId) {
           updates[`/account_deletion_requests/${uid}/${requestId}/status`] = "COMPLETED";
           updates[`/account_deletion_requests/${uid}/${requestId}/completedAt`] = deletionTimestamp;
         }
-        // 3. Purge driver data
         updates[`/drivers/${uid}`] = null;
         updates[`/ride_calculations/${uid}`] = null;
 
         try {
-          // Execute RTDB purge
           await db.ref().update(updates);
 
-          // 4. Delete user from Firebase Authentication if authenticated
           if (auth.currentUser && auth.currentUser.uid === uid) {
             await auth.currentUser.delete();
           }

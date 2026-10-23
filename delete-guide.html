@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#120c29">
+  <meta name="description"
+        content="Terms & Conditions and step-by-step instructions on deleting your Smart Ride Advisor (SRA) account using the mobile app.">
+  <title>Terms &amp; Account Deletion Guide — Smart Ride Advisor</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #100b24;
+      --surface: #1c1438;
+      --surface-light: #281d49;
+      --text: #f6f2ff;
+      --muted: #bcb3d0;
+      --gold: #e4c783;
+      --purple: #9167ee;
+      --border: rgba(228, 199, 131, .18);
+      --green: #94e3b0;
+      --yellow: #f4d582;
+      --red: #ffaaa9;
+      --red-accent: #e54d58;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      width: min(920px, calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(16, 11, 36, .96);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .navigation {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 84px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--gold);
+      border-radius: 14px;
+      background: linear-gradient(145deg, #493176, #211639);
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .brand strong, .brand small { display: block; }
+    .brand strong { font-size: 15px; }
+    .brand small { color: var(--muted); font-size: 11px; }
+
+    nav { display: flex; flex-wrap: wrap; gap: 20px; }
+    nav a { color: var(--muted); font-size: 13px; }
+    nav a:hover { color: var(--gold); }
+
+    .hero-guide {
+      padding: 70px 0 50px;
+      background:
+        radial-gradient(ellipse at 80% 20%, #38205d 0, transparent 60%),
+        var(--background);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: clamp(34px, 5vw, 56px);
+      letter-spacing: -.04em;
+      line-height: 1.15;
+    }
+
+    h1 span { color: var(--gold); }
+
+    .lead {
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 17px;
+      margin-bottom: 0;
+    }
+
+    section { padding: 50px 0; }
+
+    .card {
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--surface);
+      margin-bottom: 24px;
+    }
+
+    .warning-box {
+      border-left: 4px solid var(--red-accent);
+      background: rgba(229, 77, 88, 0.08);
+      border-radius: 0 16px 16px 0;
+      padding: 20px 24px;
+      margin-bottom: 36px;
+    }
+
+    .warning-box h3 {
+      margin: 0 0 8px;
+      color: var(--red);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .warning-box p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .step-item {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 20px;
+      background: #181231;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      align-items: start;
+    }
+
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #4c3e91, #30214d);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .step-content h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      color: var(--text);
+    }
+
+    .step-content p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .step-badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 3px 10px;
+      border-radius: 6px;
+      background: rgba(228, 199, 131, 0.1);
+      color: var(--gold);
+      font-size: 12px;
+      font-family: monospace;
+    }
+
+    .terms-box {
+      background: #150f2e;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 24px 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .terms-box h4 {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 15px;
+    }
+
+    .terms-box ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .terms-box li {
+      margin-bottom: 8px;
+    }
+
+    .data-table-wrapper {
+      overflow-x: auto;
+      margin-top: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      color: var(--gold);
+      font-weight: 600;
+      background: rgba(228, 199, 131, 0.05);
+    }
+
+    td { color: var(--muted); }
+
+    .tag-deleted {
+      color: var(--red);
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 10px 22px;
+      border-radius: 12px;
+      background: linear-gradient(110deg, #8457da, #6358cb);
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      font-size: 14px;
+    }
+
+    .button.secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .button.secondary:hover {
+      border-color: var(--gold);
+    }
+
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      background: #0d081f;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 650px) {
+      .step-item {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .step-number {
+        width: 38px;
+        height: 38px;
+        font-size: 15px;
+      }
+      .footer-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container navigation">
+      <a class="brand" href="index.html">
+        <span class="brand-icon" aria-hidden="true">SRA</span>
+        <span>
+          <strong>Smart Ride Advisor</strong>
+          <small>Drive with clarity</small>
+        </span>
+      </a>
+
+      <nav aria-label="Quick links">
+        <a href="index.html">Home</a>
+        <a href="index.html#calculator">Fare Calculator</a>
+        <a href="index.html#privacy">Privacy Policy</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero-guide">
+      <div class="container">
+        <p class="eyebrow">Terms &amp; Account Operations</p>
+        <h1>Terms &amp; Conditions: <span>Account Deletion</span></h1>
+        <p class="lead">
+          Review our terms regarding user data erasure, followed by the exact steps to delete your account directly inside the Smart Ride Advisor mobile application.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <!-- Terms and Conditions Summary -->
+        <div class="card">
+          <h2 style="margin-top: 0; font-size: 22px; color: var(--gold);">Terms &amp; Conditions of Account Deletion</h2>
+          <p style="color: var(--muted); font-size: 14px;">
+            By initiating an account deletion request through the Smart Ride Advisor app, you agree to the following terms:
+          </p>
+          <div class="terms-box">
+            <h4>Key Terms:</h4>
+            <ul>
+              <li><strong>Irreversibility:</strong> Deleting your account is instantaneous and permanent. You will not be able to reactivate or restore previous calculation logs or customized settings.</li>
+              <li><strong>Immediate Service Termination:</strong> Access to background OCR assistance, fare calculations, and rate guidance will terminate immediately upon confirmation.</li>
+              <li><strong>Total Data Purge:</strong> All personal credentials, phone authentication state, vehicle profiles, and cached calculation queries are permanently purged from our Firebase cloud databases.</li>
+              <li><strong>Independent Ecosystem:</strong> Deleting your Smart Ride Advisor account has zero impact on your third-party ride-hailing app accounts (e.g., inDrive).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          <h3>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            Permanent &amp; Irreversible Action
+          </h3>
+          <p>
+            Once confirmed, your account records cannot be recovered. If you wish to use the service again, you will be required to create a new profile from scratch.
+          </p>
+        </div>
+
+        <h2 style="letter-spacing: -.03em; margin-bottom: 24px;">Follow These Steps to Delete Your Account</h2>
+
+        <div class="steps-container">
+          <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Log in to the Smart Ride Advisor App</h3>
+              <p>Launch the SRA application on your Android phone and sign in with your phone number or email credentials.</p>
+              <span class="step-badge">Step 1: Authenticated</span>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Go to Your Driver Profile Screen</h3>
+              <p>Tap your <strong>Profile Avatar</strong> in the top header, or select <strong>Profile</strong> from the bottom navigation bar.</p>
+              <span class="step-badge">Step 2: Profile Screen</span>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Scroll Down and Tap "Delete Account"</h3>
+              <p>Scroll down to the bottom of the driver profile screen past your vehicle settings, and tap the red <strong>Delete account</strong> button.</p>
+              <span class="step-badge">Step 3: Tap Red Button</span>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h3>Confirm Account Deletion</h3>
+              <p>A confirmation dialog will appear. Tap <strong>Confirm Delete</strong> to finalize. Your session will immediately wipe and return you to the login screen.</p>
+              <span class="step-badge">Step 4: Confirmed &amp; Logged Out</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Retention & Erasure Summary Table -->
+        <div class="card" style="margin-top: 40px;">
+          <h3 style="margin-top: 0;">Data Retention &amp; Erasure Summary</h3>
+          <p style="color: var(--muted); font-size: 14px;">
+            In compliance with Google Play Developer Policies and data safety standards, here is how each category of data is handled upon deletion:
+          </p>
+
+          <div class="data-table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data Category</th>
+                  <th>Examples</th>
+                  <th>Action Taken</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Sign-in Credentials</strong></td>
+                  <td>Firebase Auth User ID, Email, Phone authentication state</td>
+                  <td><span class="tag-deleted">Deleted Immediately</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Driver Profile</strong></td>
+                  <td>Full name, selected city, working areas, ride app selection</td>
+                  <td><span class="tag-deleted">Deleted Immediately</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Vehicle Settings</strong></td>
+                  <td>Make, model, variant, year, fuel average, petrol price</td>
+                  <td><span class="tag-deleted">Deleted Immediately</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Rate Configurations</strong></td>
+                  <td>Minimum gross rate, target rate, multiplier, margin settings</td>
+                  <td><span class="tag-deleted">Deleted Immediately</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Calculation History</strong></td>
+                  <td>Recorded ride queries, extracted OCR fares, distance logs</td>
+                  <td><span class="tag-deleted">Deleted Immediately</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Device &amp; App Cache</strong></td>
+                  <td>Encrypted SharedPreferences, temporary session tokens</td>
+                  <td><span class="tag-deleted">Wiped from Device</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card" style="background: linear-gradient(145deg, #2d2049, #1b1433); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+          <div>
+            <h3 style="margin: 0 0 6px;">Need Assistance?</h3>
+            <p style="margin: 0; color: var(--muted); font-size: 14px;">
+              If you have uninstalled the app or cannot log in, email our support desk for manual removal.
+            </p>
+          </div>
+          <div>
+            <a class="button secondary" href="mailto:smartrideadvisor.support@gmail.com?subject=Manual%20Account%20Deletion%20Assistance">
+              Email Developer
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-content">
+      <div>
+        <strong style="color: var(--text); font-size: 14px;">Smart Ride Advisor</strong>
+        <p style="color: var(--muted); font-size: 12px; margin: 4px 0 0;">
+          © 2026 Muhammad Waqas · Independent app for ride-hailing drivers in Pakistan.
+        </p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Main Website</a>
+        <a href="index.html#privacy">Privacy Policy</a>
+        <a href="index.html#support">Help &amp; Support</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
