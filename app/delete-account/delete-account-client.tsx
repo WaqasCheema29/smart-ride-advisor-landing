@@ -259,10 +259,10 @@ export function DeleteAccountClient() {
         {stage === "confirm" && user && <section className="delete-card" aria-labelledby="confirm-heading">
           <h2 id="confirm-heading" style={{ marginTop: 0 }}>This permanently deletes your data</h2>
           <div className="delete-notice danger-note">{hasSraData
-            ? "The Firebase sign-in account and SRA records stored under the driver profile and ride calculation paths will be deleted. This cannot be undone."
-            : "No SRA driver profile or ride records were found for this account. If you continue, its Firebase Authentication account will still be permanently deleted."} Other app storage paths must also be included if the Android app stores data elsewhere. This does not affect your Google account or inDrive account.</div>
+            ? "The Firebase sign-in account and SRA records under the driver profile and ride calculation paths will be permanently deleted. This cannot be undone."
+            : "No SRA driver profile or ride records were found for this account. If you continue, its Firebase Authentication account will still be permanently deleted."} Any data stored in other Firebase paths will not be deleted by this page. Your Google and inDrive accounts are unaffected.</div>
           <p className="muted">Verified account: {user.email || user.displayName || "Google account"}</p>
-          <label className="delete-acknowledge"><input type="checkbox" checked={acknowledged} onChange={event => setAcknowledged(event.target.checked)} /> I understand this action is permanent and want to delete my SRA account.</label>
+          <label className="delete-acknowledge"><input type="checkbox" checked={acknowledged} onChange={event => setAcknowledged(event.target.checked)} /><span>I understand this action is permanent and want to delete my SRA account.</span></label>
           <div className="delete-actions">
             <button className="danger" type="button" onClick={deleteAccount} disabled={busy || !acknowledged}>Delete my account</button>
             <button className="secondary" type="button" onClick={cancel} disabled={busy}>Cancel and sign out</button>

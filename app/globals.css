@@ -22,6 +22,15 @@
 .delete-divider { display: flex; align-items: center; gap: 14px; margin-top: 18px; color: var(--muted); font-size: 13px; }
 .delete-divider::before, .delete-divider::after { content: ""; height: 1px; flex: 1; background: var(--border); }
 .delete-card .google-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; border-color: #ddd; color: #232323; background: #fff; }
-.delete-acknowledge { display: flex !important; align-items: flex-start; gap: 10px; font-weight: 400 !important; }
-.delete-acknowledge input { flex: none; margin-top: 7px; accent-color: #9167ee; }
+.delete-acknowledge { box-sizing: border-box; display: flex !important; align-items: flex-start; gap: 12px; width: 100%; margin: 22px 0 8px !important; padding: 16px; border: 1px solid var(--border); border-radius: 12px; color: var(--text); background: #150f2e; font-weight: 500 !important; line-height: 1.55; cursor: pointer; }
+.delete-acknowledge span { flex: 1; min-width: 0; }
+.delete-acknowledge input[type="checkbox"] { box-sizing: border-box; width: 20px; height: 20px; min-height: 20px; flex: 0 0 20px; margin: 2px 0 0; padding: 0; accent-color: #9167ee; cursor: pointer; }
+.delete-actions { margin-top: 20px; }
+.delete-card button:focus-visible, .delete-acknowledge:focus-within { outline: 3px solid #c4a7ff; outline-offset: 3px; }
 .delete-account-shell footer { padding: 24px 0; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+
+@media (max-width: 600px) {
+  .delete-card { padding: 22px 18px; }
+  .delete-actions { flex-direction: column; }
+  .delete-actions button { width: 100%; margin-top: 8px; }
+}
