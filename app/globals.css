@@ -1,0 +1,27 @@
+@import "./legacy.css";
+@import "./guide.css";
+
+.delete-account-shell { min-height: 100vh; }
+.delete-account-shell .container { width: min(760px, calc(100% - 40px)); margin-inline: auto; }
+.delete-account-shell main { padding: 48px 0 80px; }
+.delete-account-shell h1 { margin: 0 0 14px; font-size: clamp(34px, 6vw, 52px); line-height: 1.15; }
+.delete-card { margin-top: 26px; padding: 28px; border: 1px solid var(--border); border-radius: 18px; background: var(--surface); }
+.delete-card form { display: grid; gap: 12px; }
+.delete-card label { display: block; margin: 0; font-weight: 600; }
+.delete-card input[type="email"], .delete-card input[type="password"] { box-sizing: border-box; display: block; width: 100%; min-width: 0; margin: 0; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; color: var(--text); background: #150f2e; font: inherit; }
+.delete-card button { min-height: 44px; margin-top: 16px; padding: 10px 18px; border: 1px solid var(--border); border-radius: 10px; color: var(--text); background: #7654cd; font: inherit; font-weight: 700; cursor: pointer; }
+.delete-card button:disabled { opacity: .55; cursor: wait; }
+.delete-card button.danger { background: #a82d3c; }
+.delete-card button.secondary { background: transparent; }
+.delete-notice { margin: 18px 0; padding: 14px 16px; border-left: 3px solid var(--gold); border-radius: 6px; color: var(--muted); background: #150f2e; }
+.delete-notice.danger-note { border-color: var(--red-accent); }
+.delete-status { min-height: 1.5em; margin-top: 16px; }
+.delete-status.error { color: var(--red); }
+.delete-status.success { color: var(--green); }
+.delete-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.delete-divider { display: flex; align-items: center; gap: 14px; margin-top: 18px; color: var(--muted); font-size: 13px; }
+.delete-divider::before, .delete-divider::after { content: ""; height: 1px; flex: 1; background: var(--border); }
+.delete-card .google-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; border-color: #ddd; color: #232323; background: #fff; }
+.delete-acknowledge { display: flex !important; align-items: flex-start; gap: 10px; font-weight: 400 !important; }
+.delete-acknowledge input { flex: none; margin-top: 7px; accent-color: #9167ee; }
+.delete-account-shell footer { padding: 24px 0; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }

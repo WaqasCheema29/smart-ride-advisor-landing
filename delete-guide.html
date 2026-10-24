@@ -376,7 +376,7 @@
             <ul>
               <li><strong>Irreversibility:</strong> Deleting your account is instantaneous and permanent. You will not be able to reactivate or restore previous calculation logs or customized settings.</li>
               <li><strong>Immediate Service Termination:</strong> Access to background OCR assistance, fare calculations, and rate guidance will terminate immediately upon confirmation.</li>
-              <li><strong>Total Data Purge:</strong> All personal credentials, phone authentication state, vehicle profiles, and cached calculation queries are permanently purged from our Firebase cloud databases.</li>
+              <li><strong>Online deletion:</strong> The website deletion flow removes the Firebase Authentication account and the UID-keyed driver profile and ride calculation records. Other app storage paths must be added to the deletion process if the Android app stores data elsewhere.</li>
               <li><strong>Independent Ecosystem:</strong> Deleting your Smart Ride Advisor account has zero impact on your third-party ride-hailing app accounts (e.g., inDrive).</li>
             </ul>
           </div>
@@ -397,6 +397,14 @@
         </div>
 
         <h2 style="letter-spacing: -.03em; margin-bottom: 24px;">Follow These Steps to Delete Your Account</h2>
+
+        <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+          <div>
+            <h3 style="margin:0 0 6px">Delete online</h3>
+            <p style="margin:0;color:var(--muted);font-size:14px">Sign in with email and password, then confirm permanent deletion. Phone-only users can delete in the signed-in app or contact support.</p>
+          </div>
+          <a class="button" href="delete-account.html">Open account deletion</a>
+        </div>
 
         <div class="steps-container">
           <div class="step-item">
@@ -456,32 +464,32 @@
                 <tr>
                   <td><strong>Sign-in Credentials</strong></td>
                   <td>Firebase Auth User ID, Email, Phone authentication state</td>
-                  <td><span class="tag-deleted">Deleted Immediately</span></td>
+                  <td><span class="tag-deleted">Firebase Auth account deleted</span></td>
                 </tr>
                 <tr>
                   <td><strong>Driver Profile</strong></td>
                   <td>Full name, selected city, working areas, ride app selection</td>
-                  <td><span class="tag-deleted">Deleted Immediately</span></td>
+                  <td><span class="tag-deleted">Removed from /drivers/{uid}</span></td>
                 </tr>
                 <tr>
                   <td><strong>Vehicle Settings</strong></td>
                   <td>Make, model, variant, year, fuel average, petrol price</td>
-                  <td><span class="tag-deleted">Deleted Immediately</span></td>
+                  <td><span class="tag-deleted">Removed from /drivers/{uid}</span></td>
                 </tr>
                 <tr>
                   <td><strong>Rate Configurations</strong></td>
                   <td>Minimum gross rate, target rate, multiplier, margin settings</td>
-                  <td><span class="tag-deleted">Deleted Immediately</span></td>
+                  <td><span class="tag-deleted">Removed from /drivers/{uid}</span></td>
                 </tr>
                 <tr>
                   <td><strong>Calculation History</strong></td>
                   <td>Recorded ride queries, extracted OCR fares, distance logs</td>
-                  <td><span class="tag-deleted">Deleted Immediately</span></td>
+                  <td><span class="tag-deleted">Removed from /ride_calculations/{uid}</span></td>
                 </tr>
                 <tr>
                   <td><strong>Device &amp; App Cache</strong></td>
                   <td>Encrypted SharedPreferences, temporary session tokens</td>
-                  <td><span class="tag-deleted">Wiped from Device</span></td>
+                  <td><span class="tag-deleted">Must be cleared in the app</span></td>
                 </tr>
               </tbody>
             </table>

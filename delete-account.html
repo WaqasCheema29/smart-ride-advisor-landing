@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#120c29">
+  <meta name="description" content="Verify your identity and permanently delete your Smart Ride Advisor account.">
+  <title>Delete Account — Smart Ride Advisor</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <style>
+    :root { color-scheme: dark; --bg:#100b24; --surface:#1c1438; --text:#f6f2ff; --muted:#bcb3d0; --gold:#e4c783; --border:rgba(228,199,131,.2); --red:#ffaaa9; --green:#94e3b0; }
+    * { box-sizing:border-box } body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 Inter,system-ui,sans-serif }
+    a { color:var(--gold) } .container { width:min(720px,calc(100% - 32px)); margin:auto }
+    header { border-bottom:1px solid var(--border); padding:18px 0 } header a { text-decoration:none; font-weight:700 }
+    main { padding:56px 0 80px } h1 { line-height:1.15; font-size:clamp(32px,6vw,48px); margin:0 0 14px }
+    .muted { color:var(--muted) } .card { background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:28px; margin-top:28px }
+    label { display:block; font-weight:600; margin:18px 0 6px } input,select { width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--border); background:#150f2e; color:var(--text); font:inherit }
+    button { border:0; border-radius:10px; padding:12px 18px; margin-top:18px; background:#7654cd; color:#fff; font:inherit; font-weight:700; cursor:pointer }
+    button.danger { background:#a82d3c } button.secondary { background:transparent; border:1px solid var(--border) } button:disabled { opacity:.55; cursor:wait }
+    [hidden] { display:none !important } .notice { padding:14px 16px; border-left:3px solid var(--gold); background:#150f2e; border-radius:6px; color:var(--muted); margin:20px 0 }
+    .status { margin-top:18px; min-height:1.5em } .error { color:var(--red) } .success { color:var(--green) }
+    .actions { display:flex; gap:10px; flex-wrap:wrap } footer { border-top:1px solid var(--border); padding:24px 0; color:var(--muted); font-size:13px }
+  </style>
+</head>
+<body>
+  <header><div class="container"><a href="index.html">Smart Ride Advisor</a></div></header>
+  <main class="container">
+    <p style="color:var(--gold);font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase">Account &amp; data deletion</p>
+    <h1>Delete your account</h1>
+    <p class="muted">Sign in with your email and password, then review the deletion warning and confirm to permanently remove your account and associated SRA data.</p>
+    <section class="card" aria-labelledby="signin-heading">
+      <h2 id="signin-heading" style="margin-top:0">Verify your identity</h2>
+      <form id="email-form">
+        <label for="email">Email address</label><input id="email" type="email" autocomplete="username" required>
+        <label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required>
+        <button type="submit">Sign in</button>
+      </form>
+      <div class="notice">If your account uses phone-only sign-in, delete it from the signed-in Android app or <a href="mailto:smartrideadvisor.support@gmail.com?subject=SRA%20account%20deletion%20request">contact support</a>. This page does not send SMS codes.</div>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </section>
+    <section id="confirm-card" class="card" hidden aria-labelledby="confirm-heading">
+      <h2 id="confirm-heading" style="margin-top:0">This permanently deletes your data</h2>
+      <div class="notice">Your Firebase sign-in account and the SRA profile and ride calculation records associated with it will be deleted. This cannot be undone. Deleting your SRA account does not affect your inDrive account.</div>
+      <p id="signed-in-as" class="muted"></p>
+      <label style="display:flex;gap:10px;align-items:flex-start;font-weight:400"><input id="acknowledge" type="checkbox" style="width:auto;margin-top:6px">I understand this action is permanent and want to delete my account.</label>
+      <div class="actions"><button id="delete-button" class="danger" disabled>Delete my account</button><button id="signout-button" class="secondary">Cancel and sign out</button></div>
+    </section>
+  </main>
+  <footer><div class="container"><a href="delete-guide.html">Read deletion terms</a> · <a href="index.html">Return to Smart Ride Advisor</a></div></footer>
+  <script>
+    (() => {
+      "use strict";
+      const firebaseConfig = {
+        apiKey: "AIzaSyAsj3arQJE5suzcVPpK7aYcA0eo2KOtz1A",
+        authDomain: "smart-ride-advisor.firebaseapp.com",
+        databaseURL: "https://smart-ride-advisor-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "smart-ride-advisor"
+      };
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.database();
+      const $ = id => document.getElementById(id);
+      const status = $("status");
+      let confirmation = null;
+
+      function showStatus(message, kind) {
+        status.className = "status" + (kind ? " " + kind : "");
+        status.textContent = message;
+      }
+      function friendlyError(error) {
+        const messages = {
+          "auth/invalid-credential": "The sign-in details are incorrect. Check them and try again.",
+          "auth/user-not-found": "No account was found for those details.",
+          "auth/wrong-password": "The sign-in details are incorrect. Check them and try again.",
+          "auth/invalid-email": "Enter a valid email address.",
+          "auth/too-many-requests": "Too many attempts. Please wait and try again later.",
+          "auth/operation-not-allowed": "This sign-in method is not enabled for this Firebase project.",
+          "auth/unauthorized-domain": "This website domain is not authorized in Firebase Authentication settings.",
+          "auth/requires-recent-login": "Please sign in again, then retry the deletion.",
+          "database/permission-denied": "Firebase Database rules denied deletion. The project owner must allow an authenticated user to delete their own records."
+        };
+        return messages[error.code] || "Could not complete the request. Check your connection and Firebase settings, then try again.";
+      }
+      async function onSignedIn(user) {
+        showStatus("Checking for your SRA profile…", "");
+        try {
+          const [driver, calculations] = await Promise.all([
+            db.ref(`/drivers/${user.uid}`).once("value"),
+            db.ref(`/ride_calculations/${user.uid}`).once("value")
+          ]);
+          if (!driver.exists() && !calculations.exists()) {
+            await auth.signOut();
+            showStatus("No SRA account data was found for that verified sign-in.", "error");
+            return;
+          }
+        } catch (error) {
+          showStatus(friendlyError(error), "error");
+          return;
+        }
+        confirmation = user;
+        $("confirm-card").hidden = false;
+        $("signed-in-as").textContent = "Verified account: " + (user.email || user.phoneNumber || "signed in");
+        $("signin-heading").textContent = "Identity verified";
+        $("email-form").hidden = true;
+        showStatus("Your identity is verified. Review the warning before continuing.", "success");
+      }
+      $("email-form").addEventListener("submit", async event => {
+        event.preventDefault();
+        const button = event.currentTarget.querySelector("button[type=submit]");
+        button.disabled = true;
+        showStatus("Checking sign-in details…", "");
+        try {
+          const credential = await auth.signInWithEmailAndPassword($("email").value.trim(), $("password").value);
+          await onSignedIn(credential.user);
+        } catch (error) { showStatus(friendlyError(error), "error"); }
+        finally { button.disabled = false; }
+      });
+      $("acknowledge").addEventListener("change", event => { $("delete-button").disabled = !event.target.checked; });
+      $("signout-button").addEventListener("click", async () => { await auth.signOut(); location.href = "delete-guide.html"; });
+      $("delete-button").addEventListener("click", async event => {
+        if (!confirmation || !$("acknowledge").checked) return;
+        const button = event.currentTarget;
+        button.disabled = true;
+        showStatus("Deleting your account and associated data…", "");
+        const uid = confirmation.uid;
+        try {
+          // Keep this list aligned with the app's UID-keyed Realtime Database records.
+          const updates = { [`/drivers/${uid}`]: null, [`/ride_calculations/${uid}`]: null };
+          await db.ref().update(updates);
+          await confirmation.delete();
+          $("confirm-card").hidden = true;
+          showStatus("Your account and associated SRA records have been deleted.", "success");
+        } catch (error) {
+          showStatus(friendlyError(error), "error");
+          button.disabled = !$("acknowledge").checked;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

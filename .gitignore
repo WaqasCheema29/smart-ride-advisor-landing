@@ -5,3 +5,9 @@ Desktop.ini
 .idea/
 *.log
 .vercel
+node_modules/
+.next/
+out/
+.env.local
+.env.*.local
+google-services (1).json
